@@ -34,7 +34,6 @@ fn sanitise_string(s: &str) -> String {
 
 fn main() {
     let args = Args::parse();
-    dbg!(&args);
 
     let svg_file = fs::File::open(&args.input_path);
     let mut svg_xml: String = String::new();
@@ -61,7 +60,6 @@ fn main() {
             err
         ),
     };
-    dbg!(&doc);
 
     let scaling_factor = match args.scale {
         Some(scale) => scale,
@@ -70,8 +68,6 @@ fn main() {
 
     let doc_width = doc.root().first_child().unwrap().attribute("width");
     let doc_height = doc.root().first_child().unwrap().attribute("height");
-    dbg!(doc_width);
-    dbg!(doc_height);
 
     let mut dimensions: [Option<svgtypes::Length>; 2] = [None, None];
 
@@ -112,7 +108,6 @@ fn main() {
     };
 
     let gcode = svg2program(&doc, &conversion_config, conversion_options, machine);
-    // dbg!(&gcode);
 
     match args.output_path.parent() {
         Some(parent) => match fs::create_dir_all(parent) {
@@ -138,7 +133,7 @@ fn main() {
         .create(true)
         .write(true)
         .append(true)
-        .open(args.output_path)
+        .open(args.output_path.clone())
     {
         Ok(output) => output,
         Err(err) => panic!(
